@@ -41,11 +41,11 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
-      const user = await login({
+      const msg = await login({
         ...values,
         type,
       });
-      if (user) {
+      if (msg.status === 'ok') {
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
@@ -58,8 +58,9 @@ const Login: React.FC = () => {
         history.push(redirect || '/');
         return;
       }
+      console.log(msg);
       // 如果失败去设置用户错误信息
-      setUserLoginState(user);
+      setUserLoginState(msg);
     } catch (error) {
       const defaultLoginFailureMessage = '登录失败，请重试！';
       message.error(defaultLoginFailureMessage);
@@ -81,7 +82,7 @@ const Login: React.FC = () => {
           }}
         >
           <Tabs activeKey={type} onChange={setType}>
-            <Tabs.TabPane key="account" tab={'账户密码登录'} />
+            <Tabs.TabPane key="account" tab={'注册'} />
           </Tabs>
 
           {status === 'error' && loginType === 'account' && (
@@ -115,11 +116,6 @@ const Login: React.FC = () => {
                     required: true,
                     message: '密码是必填项！',
                   },
-                  {
-                    min:8,
-                    type:'string',
-                    message:'密码长度不可小于8位'
-                  }
                 ]}
               />
             </>
